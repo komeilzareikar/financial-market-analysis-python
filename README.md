@@ -32,6 +32,7 @@ The equal-weight portfolio contains Apple, Nvidia, Tesla, Bitcoin, and gold. The
 - pytest
 - Git and GitHub
 - Visual Studio Code
+- Streamlit
 
 ## Key Features
 
@@ -49,6 +50,12 @@ The equal-weight portfolio contains Apple, Nvidia, Tesla, Bitcoin, and gold. The
 - Generates reusable Matplotlib visualisations
 - Organises calculations into reusable Python modules
 - Uses automated tests to verify financial calculations and error handling
+- Provides an interactive Streamlit dashboard
+- Allows users to select assets and analysis dates
+- Organises results into overview, asset, risk, portfolio, and raw-data tabs
+- Displays summary metric cards
+- Caches downloaded market data for faster repeated analysis
+- Allows users to download price data, metrics, and portfolio comparisons as CSV files
 
 ## Key Questions
 
@@ -108,9 +115,18 @@ Therefore, the portfolio delivered better risk-adjusted returns than the benchma
 
 ```text
 financial-market-analysis-python/
+├── app.py
 ├── market_analysis.ipynb
-├── requirements.txt
 ├── README.md
+├── requirements.txt
+├── images/
+│   ├── dashboard-overview.png
+│   ├── dashboard-asset-performance.png
+│   ├── dashboard-risk-drawdown.png
+│   ├── dashboard-risk-correlation.png
+│   ├── dashboard-portfolio-performance.png
+│   ├── dashboard-portfolio-comparison.png
+│   └── dashboard-portfolio-metrics.png
 ├── src/
 │   ├── __init__.py
 │   ├── data_loader.py
@@ -121,6 +137,12 @@ financial-market-analysis-python/
     ├── test_metrics.py
     └── test_portfolio.py
 ```
+- `app.py` contains the interactive Streamlit dashboard.
+- `market_analysis.ipynb` contains the complete financial analysis.
+- `images/` contains screenshots used in the README.
+- `src/` contains reusable project modules.
+- `tests/` contains the automated test suite.
+- `requirements.txt` records the required Python packages.
 
 ## Installation and Setup
 
@@ -150,6 +172,22 @@ python -m pip install -r requirements.txt
 ```
 
 Open `market_analysis.ipynb` in Visual Studio Code or Jupyter Notebook, select the `.venv` Python environment, and run all cells.
+
+## Running the Dashboard
+
+Launch the Streamlit application from the project folder:
+
+```bash
+python -m streamlit run app.py
+```
+
+The application will normally open at:
+
+```text
+http://localhost:8501
+```
+
+Use the sidebar to select assets and analysis dates, then click **Run Analysis**.
 
 ## Running the Tests
 
@@ -191,17 +229,18 @@ Through this project, I developed practical experience in:
 
 Planned improvements include:
 
-- Build an interactive Streamlit dashboard
-- Allow users to select assets and analysis dates
+- Deploy the Streamlit dashboard publicly
+- Allow users to enter additional ticker symbols
 - Allow custom portfolio weights
 - Add rolling volatility and rolling correlation analysis
 - Include a configurable risk-free rate in the Sharpe ratio
-- Add CAGR and Sortino ratio
+- Add CAGR, Sortino ratio, and other performance metrics
 - Add Value at Risk and other downside-risk measures
-- Compare different rebalancing frequencies
-- Add transaction costs and slippage
+- Compare different portfolio rebalancing frequencies
+- Include transaction costs, slippage, taxes, and management fees
 - Develop portfolio optimisation and strategy backtesting
-- Support additional financial-data sources
+- Support additional and more reliable financial-data sources
+- Add automated testing with GitHub Actions
 
 ## Disclaimer
 
