@@ -27,6 +27,20 @@ DEFAULT_TICKERS = [
     "GC=F",
 ]
 
+# data caching
+
+@st.cache_data(ttl=3600, show_spinner=False)
+def load_market_data(
+    tickers: tuple[str, ...],
+    start_date: str,
+    end_date: str,
+):
+    """Download and cache market data for one hour."""
+    return download_prices(
+        tickers,
+        start_date=start_date,
+        end_date=end_date,
+    )
 
 st.set_page_config(
     page_title="Financial Market Analysis",
@@ -94,6 +108,17 @@ if run_analysis:
                 use_container_width=True,
             )
 
+            # CSV downloads
+
+            price_csv = prices.to_csv().encode("utf-8")
+
+            st.download_button(
+                label="Download Price Data",
+                data=price_csv,
+                file_name="market_prices.csv",
+                mime="text/csv",
+            )
+
             # financial metrics table
 
             daily_returns = prices.pct_change(
@@ -113,7 +138,76 @@ if run_analysis:
                 asset_metrics.round(2),
                 use_container_width=True,
             )
-            
+
+            # Download the metrics table
+
+            metrics_csv = asset_metrics.round(2).to_csv().encode("utf-8")
+
+            st.download_button(
+                label="Download Asset Metrics",
+                data=metrics_csv,
+                file_name="asset_metrics.csv",
+                mime="text/csv",
+            )
+
+            # summary metric cards
+
+            st.subheader("Analysis Highlights")
+
+            highest_return_asset = asset_metrics[
+                "Total Return (%)"
+            ].idxmax()
+
+            most_volatile_asset = asset_metrics[
+                "Annual Volatility (%)"
+            ].idxmax()
+
+            best_sharpe_asset = asset_metrics[
+                "Sharpe Ratio"
+            ].idxmax()
+
+            worst_drawdown_asset = asset_metrics[
+                "Maximum Drawdown (%)"
+            ].idxmin()
+
+            highlight_columns = st.columns(4)
+
+            with highlight_columns[0]:
+                st.metric(
+                    "Highest Total Return",
+                    highest_return_asset,
+                    (
+                        f"{asset_metrics.loc[highest_return_asset, 'Total Return (%)']:.2f}%"
+                    ),
+                )
+
+            with highlight_columns[1]:
+                st.metric(
+                    "Highest Volatility",
+                    most_volatile_asset,
+                    (
+                        f"{asset_metrics.loc[most_volatile_asset, 'Annual Volatility (%)']:.2f}%"
+                    ),
+                )
+
+            with highlight_columns[2]:
+                st.metric(
+                    "Best Sharpe Ratio",
+                    best_sharpe_asset,
+                    (
+                        f"{asset_metrics.loc[best_sharpe_asset, 'Sharpe Ratio']:.2f}"
+                    ),
+                )
+
+            with highlight_columns[3]:
+                st.metric(
+                    "Worst Drawdown",
+                    worst_drawdown_asset,
+                    (
+                        f"{asset_metrics.loc[worst_drawdown_asset, 'Maximum Drawdown (%)']:.2f}%"
+                    ),
+                )
+
             # normalised asset performance
 
             common_prices = prices.dropna()
