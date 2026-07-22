@@ -186,33 +186,35 @@ else:
                 end_date.isoformat(),
             )
 
-        daily_returns = prices.pct_change(
-            fill_method=None
-        ).dropna()
+            # Keep only dates for which every selected asset has a price.
+            common_prices = prices.dropna()
 
-        if daily_returns.empty:
-            raise ValueError(
-                "Not enough common price data is available to "
-                "calculate returns for the selected assets and dates."
+            if len(common_prices) < 2:
+                raise ValueError(
+                    "Not enough common price data is available for "
+                    "the selected assets and dates."
             )
 
-        asset_metrics = calculate_asset_metrics(daily_returns)
-        drawdowns = calculate_asset_drawdowns(daily_returns)
-        correlation_matrix = daily_returns.corr()
+            # Calculate returns after aligning all assets to common dates.
+            daily_returns = common_prices.pct_change(
+                fill_method=None
+            ).dropna()
 
-        common_prices = prices.dropna()
+            if daily_returns.empty:
+                raise ValueError(
+                    "Not enough return data is available for "
+                    "the selected assets and dates."
+                )
 
-        if common_prices.empty:
-            raise ValueError(
-                "No common price observations are available for "
-                "the selected assets and dates."
-            )
+            asset_metrics = calculate_asset_metrics(daily_returns)
+            drawdowns = calculate_asset_drawdowns(daily_returns)
+            correlation_matrix = daily_returns.corr()
 
-        normalized_prices = (
+            normalized_prices = (
             common_prices
             / common_prices.iloc[0]
             * 100
-        )
+            )
 
         st.success(
             f"Downloaded {len(prices):,} rows of market data "
