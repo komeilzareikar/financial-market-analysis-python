@@ -206,6 +206,21 @@ The project currently contains nine automated tests covering:
 - Handling of empty or invalid inputs
 - Handling of missing portfolio assets
 
+### Testing Improvements
+
+During a code review in November 2026, I identified
+that three cumulative-performance tests were using
+a duplicate local function rather than the production
+implementation.
+
+I removed the duplicate so the tests now exercise
+the actual function in `src/portfolio.py`.
+
+After the correction, all nine tests passed.
+This reinforced the importance of verifying not only
+the results of automated tests, but also whether
+they test the intended production code.
+
 ## What I Learned
 
 Through this project, I developed practical experience in:
