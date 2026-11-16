@@ -48,31 +48,7 @@ def test_equal_weight_returns_rejects_missing_asset():
         )
 
 
-def calculate_cumulative_performance(
-    returns: pd.Series,
-    starting_value: float = 100.0,
-) -> pd.Series:
-    """Convert periodic returns into cumulative portfolio performance."""
 
-    clean_returns = returns.dropna()
-
-    if clean_returns.empty:
-        raise ValueError(
-            "Returns must contain at least one valid value."
-        )
-
-    if starting_value <= 0:
-        raise ValueError(
-            "Starting value must be greater than zero."
-        )
-
-    cumulative_performance = (
-        1 + clean_returns
-    ).cumprod() * starting_value
-
-    cumulative_performance.name = returns.name
-
-    return cumulative_performance
 
 
 
